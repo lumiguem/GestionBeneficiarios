@@ -5,7 +5,7 @@ using GestionBeneficiariosAPI.Services.implementations;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace GestionBeneficiariosAPI.Services
+namespace GestionBeneficiariosAPI.Services.Interfaces
 {
     public class BeneficiarioService : IBeneficiarioService
     {

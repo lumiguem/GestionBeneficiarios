@@ -1,6 +1,6 @@
 using GestionBeneficiariosAPI.Data;
-using GestionBeneficiariosAPI.Services;
 using GestionBeneficiariosAPI.Services.implementations;
+using GestionBeneficiariosAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddScoped<IBeneficiarioService, BeneficiarioService>();
+builder.Services.AddScoped<IDocumentoIdentidadService, DocumentoIdentidadService>();
 
 // Conexion SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>

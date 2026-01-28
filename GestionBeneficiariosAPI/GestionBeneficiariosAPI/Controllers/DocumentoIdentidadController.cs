@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using GestionBeneficiariosAPI.Data;
 using GestionBeneficiariosAPI.Models;
+using GestionBeneficiariosAPI.Services.implementations;
 
 namespace GestionBeneficiariosAPI.Controllers
 {
@@ -9,19 +10,18 @@ namespace GestionBeneficiariosAPI.Controllers
     [Route("api/[controller]")]
     public class DocumentoIdentidadController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public DocumentoIdentidadController(AppDbContext context)
+        private readonly IDocumentoIdentidadService _service;
+        public DocumentoIdentidadController(IDocumentoIdentidadService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        [HttpGet("activos")]
-        public async Task<ActionResult<IEnumerable<DocumentoIdentidad>>> GetActivos()
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            var documentos = await _context.DocumentosIdentidad
-                                           .Where(d => d.Activo)
-                                           .ToListAsync();
-            return Ok(documentos);
+            var result = await _service.GetAllAsync();
+            return Ok(result);
         }
+
     }
 }
