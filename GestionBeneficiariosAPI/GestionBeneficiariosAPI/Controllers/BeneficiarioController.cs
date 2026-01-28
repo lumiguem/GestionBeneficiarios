@@ -45,5 +45,25 @@ namespace GestionBeneficiariosAPI.Controllers
             await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetAll), null);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] BeneficiarioDto dto)
+        {
+            if (id <= 0)
+                return BadRequest("Id inválido");
+
+            await _service.UpdateAsync(id, dto);
+            return NoContent(); // 204
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Id inválido");
+
+            await _service.DeleteAsync(id);
+            return NoContent(); // 204
+        }
     }
 }

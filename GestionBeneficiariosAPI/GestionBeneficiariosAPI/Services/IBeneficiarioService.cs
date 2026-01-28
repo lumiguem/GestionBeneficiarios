@@ -8,5 +8,7 @@ namespace GestionBeneficiariosAPI.Services
         Task<List<BeneficiarioDto>> GetAllAsync();
         Task<BeneficiarioDto?> GetByIdAsync(int id);
         Task CreateAsync(BeneficiarioDto dto);
+        Task UpdateAsync(int id, BeneficiarioDto dto);
+        Task DeleteAsync(int id);
     }
 }
