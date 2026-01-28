@@ -1,6 +1,7 @@
 ﻿using GestionBeneficiariosAPI.Data;
 using GestionBeneficiariosAPI.DTOs;
 using GestionBeneficiariosAPI.Models;
+using GestionBeneficiariosAPI.Services.implementations;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 

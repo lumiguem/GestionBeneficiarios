@@ -1,5 +1,6 @@
 using GestionBeneficiariosAPI.Data;
 using GestionBeneficiariosAPI.Services;
+using GestionBeneficiariosAPI.Services.implementations;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

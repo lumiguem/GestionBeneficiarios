@@ -1,6 +1,6 @@
 ﻿using GestionBeneficiariosAPI.DTOs;
 
-namespace GestionBeneficiariosAPI.Services
+namespace GestionBeneficiariosAPI.Services.implementations
 {
     public interface IBeneficiarioService
     {

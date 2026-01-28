@@ -1,5 +1,5 @@
 ﻿using GestionBeneficiariosAPI.DTOs;
-using GestionBeneficiariosAPI.Services;
+using GestionBeneficiariosAPI.Services.implementations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionBeneficiariosAPI.Controllers
