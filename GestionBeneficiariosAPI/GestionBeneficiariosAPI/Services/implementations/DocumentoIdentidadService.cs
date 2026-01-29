@@ -1,10 +1,10 @@
 ﻿using GestionBeneficiariosAPI.Data;
 using GestionBeneficiariosAPI.DTOs;
 using GestionBeneficiariosAPI.Models;
-using GestionBeneficiariosAPI.Services.implementations;
+using GestionBeneficiariosAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace GestionBeneficiariosAPI.Services.Interfaces
+namespace GestionBeneficiariosAPI.Services.implementations
 {
     public class DocumentoIdentidadService : IDocumentoIdentidadService
     {
@@ -31,6 +31,21 @@ namespace GestionBeneficiariosAPI.Services.Interfaces
                 })
                 .ToListAsync();
         }
+
+        public async Task<bool> ToggleActivoAsync(int id)
+        {
+            var doc = await _context.DocumentosIdentidad
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (doc == null)
+                return false;
+
+            doc.Activo = !doc.Activo;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
 
 
     }

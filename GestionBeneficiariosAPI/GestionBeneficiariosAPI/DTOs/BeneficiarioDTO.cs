@@ -10,6 +10,6 @@ namespace GestionBeneficiariosAPI.DTOs
         public DateTime FechaNacimiento { get; set; }
         public string Sexo { get; set; } = null!;
 
-        public DocumentoIdentidadDto DocumentoIdentidad { get; set; } = null!;
+        public DocumentoIdentidadDto? DocumentoIdentidad { get; set; } = null!;
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using GestionBeneficiariosAPI.Data;
 using GestionBeneficiariosAPI.Models;
-using GestionBeneficiariosAPI.Services.implementations;
+using GestionBeneficiariosAPI.Services.Interfaces;
 
 namespace GestionBeneficiariosAPI.Controllers
 {
@@ -23,5 +23,19 @@ namespace GestionBeneficiariosAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPatch("{id}/alternar-estado")]
+        public async Task<IActionResult> AlternarEstado(int id)
+        {
+            var actualizado = await _service.ToggleActivoAsync(id);
+
+            if (!actualizado)
+                return NotFound();
+
+            return NoContent();
+        }
+
+
     }
+
+
 }

@@ -11,6 +11,7 @@
         public string Sexo { get; set; } = null!;
         public string? DocumentoNombre { get; set; }
         public string? Abreviatura { get; set; }
+        public string? Pais { get; set; }
     }
 
 }

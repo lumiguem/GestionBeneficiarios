@@ -6,6 +6,8 @@ namespace GestionBeneficiariosAPI.Models
     [Table("Beneficiario")]
     public class Beneficiario
     {
+        internal object DocumentoIdentidadNombre;
+
         [Key]
         public int Id { get; set; }
         public string Nombres { get; set; }
