@@ -3,6 +3,8 @@ import type {Beneficiario, BeneficiarioExt} from "../types.ts";
 import type {DocumentoIdentidad} from "../../documentos/types.ts";
 import {documentosApi} from "../../documentos/services/documentos.api.ts";
 import {beneficiariosApi} from "../services/beneficiarios.api.ts";
+import ConfirmDialog from "../../../components/ConfirmDialog.tsx";
+
 
 interface BeneficiaryFormProps {
     beneficiario?: BeneficiarioExt | null;
@@ -15,6 +17,8 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
     const [cargando, setCargando] = useState(false);
     const [errores] = useState<Record<string, string>>({});
     const [errorNumeroDocumento, setErrorNumeroDocumento] = useState<string | null>(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
 
 
     const [datosFormulario, setDatosFormulario] = useState<Omit<Beneficiario, 'id'> & { id?: number; documentoIdentidadId?: number }>({
@@ -69,12 +73,14 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
 
     const documentoSeleccionado = documentos.find(d => d.id === datosFormulario.documentoIdentidadId);
 
-    const manejarEnvio = async (e: React.FormEvent) => {
+    const manejarEnvio = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!validarNumeroDocumento(datosFormulario.numeroDocumento)) {
-            return;
-        }
+        if (!validarNumeroDocumento(datosFormulario.numeroDocumento)) return;
+
+        setConfirmOpen(true);
+    };
+    const confirmarGuardado = async () => {
         setCargando(true);
         try {
             await beneficiariosApi.guardar(datosFormulario);
@@ -84,8 +90,10 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
             alert('Error al guardar el beneficiario en el backend');
         } finally {
             setCargando(false);
+            setConfirmOpen(false);
         }
     };
+
 
     const claseEtiqueta = "text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2 block ml-1";
     const claseInput = (nombre: string) =>
@@ -189,7 +197,23 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
                     </button>
                 </div>
             </form>
+
+            <ConfirmDialog
+                open={confirmOpen}
+                title={beneficiario ? 'Confirmar actualización' : 'Confirmar registro'}
+                description={
+                    beneficiario
+                        ? '¿Estás seguro de actualizar la información del beneficiario?'
+                        : '¿Deseas registrar este nuevo beneficiario?'
+                }
+                confirmText={beneficiario ? 'Actualizar' : 'Registrar'}
+                loading={cargando}
+                onConfirm={confirmarGuardado}
+                onCancel={() => setConfirmOpen(false)}
+            />
+
         </div>
+
     );
 };
 

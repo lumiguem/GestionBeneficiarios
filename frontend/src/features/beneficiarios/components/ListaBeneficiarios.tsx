@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import type { BeneficiarioExt } from "../types.ts";
 import { beneficiariosApi } from "../services/beneficiarios.api.ts";
+import ConfirmDialog from "../../../components/ConfirmDialog.tsx";
+
 
 interface BeneficiaryListProps {
     onEdit: (beneficiario: BeneficiarioExt) => void;
@@ -23,17 +25,37 @@ const ListaBeneficiarios: React.FC<BeneficiaryListProps> = ({
         setBeneficiarios(datos);
         setCargando(false);
     };
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [idAEliminar, setIdAEliminar] = useState<number | null>(null);
+
 
     useEffect(() => {
         cargarDatos();
     }, [refreshToggle]);
 
-    const manejarEliminar = async (id: number) => {
-        if (window.confirm('¿Confirmar baja definitiva del sistema?')) {
-            await beneficiariosApi.eliminar(id);
-            onDeleteSuccess(); // 🔥 AVISA AL PADRE
+    const manejarEliminar = (id: number) => {
+        setIdAEliminar(id);
+        setConfirmOpen(true);
+    };
+
+    const confirmarEliminacion = async () => {
+        if (!idAEliminar) return;
+
+        setCargando(true);
+        try {
+            await beneficiariosApi.eliminar(idAEliminar);
+            onDeleteSuccess();
+        } catch (err) {
+            console.error(err);
+            alert('Error al eliminar el beneficiario');
+        } finally {
+            setCargando(false);
+            setConfirmOpen(false);
+            setIdAEliminar(null);
         }
     };
+
+
 
     const filtrados = beneficiarios.filter(b =>
         `${b.nombres} ${b.apellidos}`.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
@@ -121,6 +143,22 @@ const ListaBeneficiarios: React.FC<BeneficiaryListProps> = ({
                     <button className="flex-1 sm:flex-none px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Siguiente</button>
                 </div>
             </div>
+
+            <ConfirmDialog
+                open={confirmOpen}
+                title="Eliminar beneficiario"
+                description="Esta acción es irreversible. El beneficiario será eliminado permanentemente."
+                confirmText="Eliminar"
+                cancelText="Cancelar"
+                variant="danger"
+                loading={cargando}
+                onConfirm={confirmarEliminacion}
+                onCancel={() => {
+                    setConfirmOpen(false);
+                    setIdAEliminar(null);
+                }}
+            />
+
         </div>
     );
 };
