@@ -65,7 +65,7 @@ const ListaBeneficiarios: React.FC<BeneficiaryListProps> = ({
                     <tr className="bg-slate-50/50 text-slate-400 text-[9px] lg:text-[10px] uppercase font-black tracking-[0.2em] border-b border-slate-100">
                         <th className="px-5 lg:px-8 py-4">Beneficiario</th>
                         <th className="px-5 lg:px-8 py-4">Documento</th>
-                        <th className="px-5 lg:px-8 py-4">Estatus Legal</th>
+                        <th className="px-5 lg:px-8 py-4">Sexo</th>
                         <th className="px-5 lg:px-8 py-4 text-right">Controles</th>
                     </tr>
                     </thead>

@@ -25,8 +25,7 @@ const ListaDocumentos: React.FC = () => {
         <div className="space-y-6 lg:space-y-8">
             <div className="flex justify-between items-end">
                 <div>
-                    <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Protocolos</h2>
-                    <p className="text-slate-400 font-medium text-xs lg:text-sm mt-1">Configuración territorial de validación legal.</p>
+                    <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Documentos</h2>
                 </div>
             </div>
 
@@ -60,7 +59,7 @@ const ListaDocumentos: React.FC = () => {
                         <div className="grid grid-cols-2 gap-2 lg:gap-3">
                             <div className="bg-slate-50 p-3 lg:p-4 rounded-xl lg:rounded-2xl text-center border border-slate-100">
                                 <p className="text-[9px] lg:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5 lg:mb-1">Capacidad</p>
-                                <p className="text-slate-800 font-bold text-xs lg:text-sm">{doc.longitud} Chars</p>
+                                <p className="text-slate-800 font-bold text-xs lg:text-sm">{doc.longitud} caract.</p>
                             </div>
                             <div className="bg-slate-50 p-3 lg:p-4 rounded-xl lg:rounded-2xl text-center border border-slate-100">
                                 <p className="text-[9px] lg:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5 lg:mb-1">Tipo</p>

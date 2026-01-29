@@ -18,7 +18,6 @@ export const beneficiariosApi = {
             etiquetaDocumento: construirEtiqueta(b)
         }));
     },
-
     obtenerPorId: async (id: number): Promise<Beneficiario | null> => {
         try {
             return await http(`/Beneficiario/${id}`);
@@ -26,7 +25,6 @@ export const beneficiariosApi = {
             return null;
         }
     },
-
     guardar: async (
         datos: Omit<Beneficiario, 'id'> & { id?: number }
     ): Promise<BeneficiarioExt> => {

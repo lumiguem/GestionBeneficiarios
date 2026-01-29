@@ -48,12 +48,11 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
     };
 
 
-    // --- Cargar documentos activos desde backend
+    // Cargar documentos activos
     useEffect(() => {
         documentosApi.obtenerActivos().then(setDocumentos);
     }, []);
 
-    // --- Si hay beneficiario, precargar datos
     useEffect(() => {
         if (beneficiario) {
             setDatosFormulario({
@@ -76,7 +75,6 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
         if (!validarNumeroDocumento(datosFormulario.numeroDocumento)) {
             return;
         }
-
         setCargando(true);
         try {
             await beneficiariosApi.guardar(datosFormulario);
@@ -89,7 +87,6 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
         }
     };
 
-
     const claseEtiqueta = "text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2 block ml-1";
     const claseInput = (nombre: string) =>
         `w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl text-sm font-semibold outline-none transition-all focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 ${errores[nombre] ? 'border-rose-400 bg-rose-50' : ''}`;
@@ -98,8 +95,7 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
         <div className="bg-white rounded-[2.5rem] p-10 border border-slate-200 card-shadow">
             <div className="flex justify-between items-start mb-10">
                 <div>
-                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{beneficiario ? 'Actualización de Perfil' : 'Registro de Entidad'}</h2>
-                    <p className="text-slate-400 font-medium text-sm mt-1">Garantice la integridad de los datos biométricos y legales.</p>
+                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{beneficiario ? 'Actualización de Perfil' : 'Registro de Beneficiario'}</h2>
                 </div>
                 <div className="p-4 bg-indigo-50 rounded-2xl">
                     <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -117,14 +113,14 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
                         <input type="text" className={claseInput('apellidos')} placeholder="Ej. Pérez García" value={datosFormulario.apellidos} onChange={e => setDatosFormulario({ ...datosFormulario, apellidos: e.target.value })} />
                     </div>
                     <div>
-                        <label className={claseEtiqueta}>Documento de Identidad</label>
+                        <label className={claseEtiqueta}>Tipo de documento</label>
                         <select className={claseInput('documentoIdentidadId')} value={datosFormulario.documentoIdentidadId} onChange={e => setDatosFormulario({ ...datosFormulario, documentoIdentidadId: parseInt(e.target.value) })}>
-                            <option value={0}>Seleccione protocolo...</option>
+                            <option value={0}>Seleccione documento...</option>
                             {documentos.map(d => <option key={d.id} value={d.id}>{d.nombre} — {d.pais}</option>)}
                         </select>
                     </div>
                     <div>
-                        <label className={claseEtiqueta}>Número Identificador</label>
+                        <label className={claseEtiqueta}>Número de documento</label>
                         <input
                             type="text"
                             className={claseInput('numeroDocumento')}
@@ -138,14 +134,11 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
                             maxLength={documentoSeleccionado?.longitud}
                             onChange={e => {
                                 const valor = e.target.value;
-
                                 // Bloquea letras si solo números
                                 if (documentoSeleccionado?.soloNumeros && !/^\d*$/.test(valor)) {
                                     return;
                                 }
-
                                 setDatosFormulario({ ...datosFormulario, numeroDocumento: valor });
-
                                 // Feedback en vivo
                                 if (documentoSeleccionado) {
                                     if (valor.length !== documentoSeleccionado.longitud) {
@@ -163,7 +156,6 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
                                 {errorNumeroDocumento}
                             </p>
                         )}
-
                     </div>
                     <div>
                         <label className={claseEtiqueta}>Fecha de Nacimiento</label>
@@ -193,7 +185,7 @@ const FormularioBeneficiario: React.FC<BeneficiaryFormProps> = ({ beneficiario, 
                 <div className="flex justify-end gap-4 pt-10 border-t border-slate-100">
                     <button type="button" onClick={onCancel} className="px-8 py-4 rounded-2xl font-bold text-slate-400 hover:text-slate-600 transition-all">Descartar</button>
                     <button type="submit" disabled={cargando} className="px-12 py-4 rounded-2xl font-bold bg-indigo-600 text-white shadow-xl shadow-indigo-600/20 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50">
-                        {cargando ? 'Sincronizando...' : beneficiario ? 'Actualizar Información' : 'Consolidar Registro'}
+                        {cargando ? 'Sincronizando...' : beneficiario ? 'Actualizar Información' : 'Registrar'}
                     </button>
                 </div>
             </form>
