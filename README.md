@@ -164,6 +164,33 @@ El script incluye datos de ejemplo para:
 
 ---
 
+## 🎥 Video Demo
+
+📌 **Demostración de la aplicación**
+👉 [Ver video demo](https://drive.google.com/file/d/1Vy3IAWnnTlVBvgkZ5zt4keH1m69u_an6/view?usp=sharing)
+
+En el video se muestra:
+
+* Listado de beneficiarios
+* Registro de un nuevo beneficiario
+* Edición de un beneficiario existente
+* Eliminación con confirmación
+
+---
+
 ## 📝 Notas adicionales
 
-* El acceso a datos se realiza mediante **procedimi
+* El acceso a datos se realiza mediante **procedimientos almacenados**
+* Validaciones aplicadas en **frontend y backend**
+* Arquitectura preparada para escalar y extender funcionalidades
+
+---
+
+## 👨‍💻 Autor
+
+**Miguel Moreno**
+Reto Técnico – Gestión de Beneficiarios
+
+---
+
+⭐ Si este proyecto fue útil, no olvides darle una estrella en GitHub
