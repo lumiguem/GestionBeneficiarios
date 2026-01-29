@@ -16,6 +16,28 @@ namespace GestionBeneficiariosAPI.Services.implementations
             _context = context;
         }
 
+
+        //MÉTODO PRIVADO DE VALIDACIÓN (REGLA DE NEGOCIO)
+
+        private async Task ValidarDocumentoAsync(int documentoIdentidadId, string numeroDocumento)
+        {
+            var documento = await _context.DocumentosIdentidad
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.Id == documentoIdentidadId);
+
+            if (documento == null)
+                throw new Exception("El tipo de documento no existe.");
+
+            if (documento.SoloNumeros && !numeroDocumento.All(char.IsDigit))
+                throw new Exception("El número de documento solo debe contener números.");
+
+            if (numeroDocumento.Length != documento.Longitud)
+                throw new Exception(
+                    $"El número de documento debe tener {documento.Longitud} caracteres."
+                );
+        }
+
+        // LISTAR TODOS
         public async Task<List<BeneficiarioDto>> GetAllAsync()
         {
             var result = new List<BeneficiarioDto>();
@@ -24,9 +46,8 @@ namespace GestionBeneficiariosAPI.Services.implementations
             await conn.OpenAsync();
 
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT b.Id, b.Nombres, b.Apellidos, b.DocumentoIdentidadId, b.NumeroDocumento, b.FechaNacimiento, b.Sexo, d.Nombre, d.Abreviatura, d.Pais " +
-                              "FROM Beneficiario b " +
-                              "INNER JOIN DocumentoIdentidad d ON b.DocumentoIdentidadId = d.Id";
+            cmd.CommandText = "sp_Beneficiario_Listar";
+
             using var reader = await cmd.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
@@ -52,43 +73,7 @@ namespace GestionBeneficiariosAPI.Services.implementations
             return result;
         }
 
-        public async Task<BeneficiarioDto?> GetByIdAsync(int id)
-        {
-            BeneficiarioDto? result = null;
-
-            using var conn = _context.Database.GetDbConnection();
-            await conn.OpenAsync();
-
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = "sp_Beneficiario_ObtenerPorId";
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            cmd.Parameters.Add(new SqlParameter("@Id", id));
-
-            using var reader = await cmd.ExecuteReaderAsync();
-
-            if (await reader.ReadAsync())
-            {
-                result = new BeneficiarioDto
-                {
-                    Id = reader.GetInt32(0),
-                    Nombres = reader.GetString(1),
-                    Apellidos = reader.GetString(2),
-                    DocumentoIdentidad = new DocumentoIdentidadDto
-                    {
-                        Id = reader.GetInt32(3),
-                        Nombre = reader.GetString(7),
-                        Abreviatura = reader.GetString(8),
-                        Pais = reader.GetString(9)
-                    },
-                    NumeroDocumento = reader.GetString(4),
-                    FechaNacimiento = reader.GetDateTime(5),
-                    Sexo = reader.GetString(6)
-                };
-            }
-
-            return result;
-        }
+      //LISTAR PAGINADO
 
         public async Task<PagedResultDto<BeneficiarioDto>> GetPagedAsync(int page, int pageSize)
         {
@@ -141,14 +126,62 @@ namespace GestionBeneficiariosAPI.Services.implementations
             };
         }
 
+
+        // OBTENER POR ID
+
+        public async Task<BeneficiarioDto?> GetByIdAsync(int id)
+        {
+            BeneficiarioDto? result = null;
+
+            using var conn = _context.Database.GetDbConnection();
+            await conn.OpenAsync();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "sp_Beneficiario_ObtenerPorId";
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            cmd.Parameters.Add(new SqlParameter("@Id", id));
+
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                result = new BeneficiarioDto
+                {
+                    Id = reader.GetInt32(0),
+                    Nombres = reader.GetString(1),
+                    Apellidos = reader.GetString(2),
+                    DocumentoIdentidad = new DocumentoIdentidadDto
+                    {
+                        Id = reader.GetInt32(3),
+                        Nombre = reader.GetString(7),
+                        Abreviatura = reader.GetString(8),
+                        Pais = reader.GetString(9)
+                    },
+                    NumeroDocumento = reader.GetString(4),
+                    FechaNacimiento = reader.GetDateTime(5),
+                    Sexo = reader.GetString(6)
+                };
+            }
+
+            return result;
+        }
+
+        // AGREGAR NUEVO
+
         public async Task<BeneficiarioDto> CreateAsync(BeneficiarioDto dto)
         {
+            // validacion
+            await ValidarDocumentoAsync(
+                dto.DocumentoIdentidad.Id,
+                dto.NumeroDocumento
+            );
+
             int newId;
 
             using var conn = _context.Database.GetDbConnection();
             await conn.OpenAsync();
 
-            // 1️⃣ Ejecutar el SP de inserción
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "sp_Beneficiario_Insertar";
@@ -172,7 +205,6 @@ namespace GestionBeneficiariosAPI.Services.implementations
                 }
             }
 
-            // 2️⃣ Obtener el beneficiario recién creado usando la misma conexión
             BeneficiarioDto? created = null;
 
             using (var cmd = conn.CreateCommand())
@@ -205,10 +237,16 @@ namespace GestionBeneficiariosAPI.Services.implementations
 
             return created!;
         }
-
+        // ACTUALIZAR EXISTENTE
 
         public async Task UpdateAsync(int id, BeneficiarioDto dto)
         {
+            // validacion
+            await ValidarDocumentoAsync(
+                dto.DocumentoIdentidad.Id,
+                dto.NumeroDocumento
+            );
+
             using var conn = _context.Database.GetDbConnection();
             await conn.OpenAsync();
 
@@ -227,6 +265,7 @@ namespace GestionBeneficiariosAPI.Services.implementations
             await cmd.ExecuteNonQueryAsync();
         }
 
+        //DELETE
         public async Task DeleteAsync(int id)
         {
             using var conn = _context.Database.GetDbConnection();
