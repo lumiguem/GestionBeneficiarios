@@ -5,7 +5,7 @@
 ![React](https://img.shields.io/badge/React-Vite-61DAFB)
 ![SQL Server](https://img.shields.io/badge/Database-SQL%20Server-red)
 
-Proyecto **full stack** para la gestión de beneficiarios, desarrollado como parte del **Reto Técnico – Beneficiarios**.
+Proyecto **full stack** para la gestión de beneficiarios.
 
 Incluye:
 
